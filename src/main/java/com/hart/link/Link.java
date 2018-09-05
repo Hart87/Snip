@@ -25,12 +25,17 @@ import javax.validation.constraints.Size;
 public class Link extends BaseEntity {
 
     @NotNull
-    @Size(min = 2, max = 100)
+    @Size(min = 10, max = 1000)
     private String big;
     private String little;
     private String description;
     private Integer hit;
     //ADD USER LATER OVER HERE
+
+    protected Link() {
+        super();
+        //reviews = new ArrayList<>();    Think about this line come user time
+    }
 
 
     public Link(String big, String little, String description, Integer hit) {
