@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.amazonaws:aws-java-sdk-stepfunctions:1.11.403">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-stepfunctions/1.11.403/ccbfe9713170bcf1a4b3e7b2d10ff42f2fb5cd31/aws-java-sdk-stepfunctions-1.11.403.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-stepfunctions/1.11.403/f5d0b191af7cf747460be5f045325dda2d472629/aws-java-sdk-stepfunctions-1.11.403-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

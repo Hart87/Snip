@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.amazonaws:aws-java-sdk-cloudhsm:1.11.403">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-cloudhsm/1.11.403/f9cf7025ad13651d6b887b7159e4bd3d54404d07/aws-java-sdk-cloudhsm-1.11.403.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-cloudhsm/1.11.403/9cf5460f42e3ac4a28acfd87166357d8719fd057/aws-java-sdk-cloudhsm-1.11.403-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

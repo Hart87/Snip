@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.amazonaws:aws-java-sdk-cognitosync:1.11.403">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-cognitosync/1.11.403/349ced0ac6e5a0d64d3585b609f72d47c8b6aeb0/aws-java-sdk-cognitosync-1.11.403.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-cognitosync/1.11.403/ea3fab686f631be6d8d5e81f98601cc4d5cd4d81/aws-java-sdk-cognitosync-1.11.403-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

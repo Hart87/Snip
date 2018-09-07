@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.amazonaws:aws-java-sdk-signer:1.11.403">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-signer/1.11.403/2f9e901cfb0aeb16c623017dbc8de63612f99/aws-java-sdk-signer-1.11.403.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-java-sdk-signer/1.11.403/b25901488cf156df889887d4b880d4f331470b9c/aws-java-sdk-signer-1.11.403-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

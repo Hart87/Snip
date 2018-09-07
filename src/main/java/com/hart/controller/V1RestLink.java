@@ -1,12 +1,16 @@
 package com.hart.controller;
 
+import com.hart.aws.DBOps;
 import com.hart.link.Link;
 import com.hart.link.LinkRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -26,6 +30,7 @@ import java.util.Random;
 @RequestMapping("/routes/api/v1/")
 public class V1RestLink {
 
+
     private static final Logger logger = LoggerFactory.getLogger(V1RestLink.class);
     private final LinkRepository links;
 
@@ -36,12 +41,12 @@ public class V1RestLink {
 
     //Generate Hex
     public String GetHex() {
-
         Random random = new Random();
         Integer num = random.nextInt(9000) + 1000;
         String result = Integer.toHexString(num);
         return result;
     }
+
 
     ///   R  E  S  T       -------------------------------
 
@@ -53,8 +58,21 @@ public class V1RestLink {
 
         String little = GetHex();
 
-        Link newLink = new Link("Http://www.newyorkjets.com/offense/samdarnold", little, "REDDIT QB Debate", 0);
+        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+        Date dateobj = new Date();
+        String createdAt = df.format(dateobj);
+
+        //H2 DB
+        Link newLink = new Link("Http://www.newyorkjets.com/offense/samdarnold", little, "REDDIT QB Debate", 0, createdAt);
         links.save(newLink);
+
+        //AWS
+        try {
+            DBOps.AddLink(little, "Http://www.newyorkjets.com/offense/samdarnold", "REDDIT QB Debate", 0, createdAt);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info("AWS : DYNAMO DB - LINKS - FAIL TO UPLOAD");
+        }
 
         return newLink;
     }
