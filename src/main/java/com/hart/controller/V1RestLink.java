@@ -1,6 +1,6 @@
 package com.hart.controller;
 
-import com.hart.aws.DBOps;
+import com.hart.aws.DBOpsLinks;
 import com.hart.link.Link;
 import com.hart.link.LinkRepository;
 import org.slf4j.Logger;
@@ -68,7 +68,7 @@ public class V1RestLink {
 
         //AWS
         try {
-            DBOps.AddLink(little, big, description, 0, createdAt);
+            DBOpsLinks.AddLink(little, big, description, 0, createdAt);
         } catch (Exception e) {
             e.printStackTrace();
             logger.info("AWS : DYNAMO DB - LINKS - FAIL TO UPLOAD");
@@ -92,7 +92,7 @@ public class V1RestLink {
         //AWS DYNAMO
         try {
             //DBOps.IncrementCounter(little);
-            DBOps.UpdateLinkHit(little, incr);
+            DBOpsLinks.UpdateLinkHit(little, incr);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,14 +117,22 @@ public class V1RestLink {
     @RequestMapping(value = "/links/{little}", method= RequestMethod.DELETE, produces = "application/json")
     public String DeleteLink(@PathVariable("little") String little){
 
+        //H2 DB
         Link foundLink = links.findByLittle(little);
         links.delete(foundLink);
+
+        //AWS DYNAMO
+        try {
+            DBOpsLinks.DeleteLink(little);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return "Link Deleted...";
     }
 
 
-    //Get Link by User .........
+    //Get Link by User .........    AFTER ....  Users are created.
 
 
 }
