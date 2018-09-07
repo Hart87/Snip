@@ -63,12 +63,12 @@ public class V1RestLink {
         String createdAt = df.format(dateobj);
 
         //H2 DB
-        Link newLink = new Link("Http://www.newyorkjets.com/offense/samdarnold", little, "REDDIT QB Debate", 0, createdAt);
+        Link newLink = new Link(big, little, description, 0, createdAt);
         links.save(newLink);
 
         //AWS
         try {
-            DBOps.AddLink(little, "Http://www.newyorkjets.com/offense/samdarnold", "REDDIT QB Debate", 0, createdAt);
+            DBOps.AddLink(little, big, description, 0, createdAt);
         } catch (Exception e) {
             e.printStackTrace();
             logger.info("AWS : DYNAMO DB - LINKS - FAIL TO UPLOAD");
@@ -84,8 +84,18 @@ public class V1RestLink {
         Link foundLink = links.findByLittle(little);
         Integer incr = foundLink.getHit();
         incr++;
+
+        //H2 DB
         foundLink.setHit(incr);
         links.save(foundLink);
+
+        //AWS DYNAMO
+        try {
+            //DBOps.IncrementCounter(little);
+            DBOps.UpdateLinkHit(little, incr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return foundLink;
     }

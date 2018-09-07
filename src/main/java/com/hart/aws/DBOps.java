@@ -8,7 +8,6 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
-import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
@@ -58,33 +57,58 @@ public class DBOps {
         }
     }
 
-    public static String GetLink(String email, String lastName) throws Exception {
+    //Increment link hit count on GET
+    public static void IncrementCounter(String little) throws Exception {
         BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJVWQTEYELFA6SWJA", "8ZNyh1AsicTX1D3ZZQN3INCHGm4EVmv34z0kvDEJ");
-        AmazonDynamoDBClient client = new AmazonDynamoDBClient(credentials).withRegion(Regions.US_EAST_1);
+        AmazonDynamoDBClient client = new AmazonDynamoDBClient(credentials).withRegion(Regions.US_WEST_2);
         DynamoDB dynamoDB = new DynamoDB(client);
 
         Table table = dynamoDB.getTable("links");
-        String returnString = null;
 
-//        String email = "hart87@gmail.com";
-//        String lastName = "Hart";
 
-        GetItemSpec spec = new GetItemSpec().withPrimaryKey("email", email); //  "title", title
+        UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("little", little)
+                .withUpdateExpression("set hit = hit + :val")
+                .withValueMap(new ValueMap().withNumber(":val", 1)).withReturnValues(ReturnValue.UPDATED_NEW);
 
         try {
-            System.out.println("Attempting to read the item...");
-            Item outcome = table.getItem(spec);
-            returnString = "succeeded: " + outcome.toJSONPretty();
-            //System.out.println("GetItem succeeded: " + outcome);
+            System.out.println("Incrementing the atomic counter for link hits...");
+            UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
+            System.out.println("UpdateItem succeeded:\n" + outcome.getItem().toJSONPretty());
 
         }
         catch (Exception e) {
-            System.err.println("Unable to read item: " + email );
+            System.err.println("Unable to update item: " + little );
             System.err.println(e.getMessage());
-            returnString = e.getMessage();
         }
-        return returnString;
     }
+
+//    public static String GetLink(String email, String lastName) throws Exception {
+//        BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJVWQTEYELFA6SWJA", "8ZNyh1AsicTX1D3ZZQN3INCHGm4EVmv34z0kvDEJ");
+//        AmazonDynamoDBClient client = new AmazonDynamoDBClient(credentials).withRegion(Regions.US_EAST_1);
+//        DynamoDB dynamoDB = new DynamoDB(client);
+//
+//        Table table = dynamoDB.getTable("links");
+//        String returnString = null;
+//
+////        String email = "hart87@gmail.com";
+////        String lastName = "Hart";
+//
+//        GetItemSpec spec = new GetItemSpec().withPrimaryKey("email", email); //  "title", title
+//
+//        try {
+//            System.out.println("Attempting to read the item...");
+//            Item outcome = table.getItem(spec);
+//            returnString = "succeeded: " + outcome.toJSONPretty();
+//            //System.out.println("GetItem succeeded: " + outcome);
+//
+//        }
+//        catch (Exception e) {
+//            System.err.println("Unable to read item: " + email );
+//            System.err.println(e.getMessage());
+//            returnString = e.getMessage();
+//        }
+//        return returnString;
+//    }
 
     //SCAN
     //returns the entire database unless you apply filters.
@@ -128,26 +152,24 @@ public class DBOps {
 //    }
 
     //UPDATE ITEM
-    public static String UpdateItem(String email, String lastName, String address) throws Exception {
+    public static String UpdateLinkHit(String little, Integer newHits) throws Exception {
         BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJVWQTEYELFA6SWJA", "8ZNyh1AsicTX1D3ZZQN3INCHGm4EVmv34z0kvDEJ");
         AmazonDynamoDBClient client = new AmazonDynamoDBClient(credentials).withRegion(Regions.US_EAST_1);
         DynamoDB dynamoDB = new DynamoDB(client);
 
-        Table table = dynamoDB.getTable("people");
+        Table table = dynamoDB.getTable("links");
 
-//        String email = "hart87@gmail.com";
-//        String address = "328 Sleight Ave, Staten Island, NY 10312";
 
-        UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("email", email)
+        UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("little", little)
 //                .withUpdateExpression("set info.rating = :r, info.plot=:p, info.actors=:a")
-                .withUpdateExpression("set address = :a")
-                .withValueMap(new ValueMap().withString(":a", address))
+                .withUpdateExpression("set hit = :a")
+                .withValueMap(new ValueMap().withInt(":a", newHits))
                 .withReturnValues(ReturnValue.UPDATED_NEW);
 
         try {
-            System.out.println("Updating the item...");
+            System.out.println("Updating " + little +  "...");
             UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
-            String returnString = ("UpdateItem succeeded:\n" + outcome.getItem().toJSONPretty());
+            String returnString = ("Update hits succeeded:\n" + outcome.getItem().toJSONPretty());
             return returnString;
         }
         catch (Exception e) {
