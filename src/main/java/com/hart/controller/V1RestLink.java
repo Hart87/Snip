@@ -27,7 +27,7 @@ import java.util.Random;
  *
  */
 @RestController
-@RequestMapping("/routes/api/v1/")
+//@RequestMapping("/routes/api/v1/")
 public class V1RestLink {
 
 
@@ -47,16 +47,31 @@ public class V1RestLink {
         return result;
     }
 
+    public String CreateLittleURLWithValidation() {  //TEST THIS L8ER
+        //Generate hex
+        String little = GetHex();
+
+        //Run through all links to make sure
+        //the new one created is unique.
+        for (Link link : links.findAll()) {
+            Link newLink = link;
+            if (little.equals(newLink.getLittle())) {
+                CreateLittleURLWithValidation(); //Recursion
+            }
+        }
+        return little;
+    }
+
 
     ///   R  E  S  T       -------------------------------
 
     //Create a Link
-    @RequestMapping(value = "/links", method= RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "routes/api/v1/links", method= RequestMethod.POST, produces = "application/json")
     public Link CreateLinks(
             @RequestParam("big") String big,
             @RequestParam("description") String description ) {
 
-        String little = GetHex();
+        String little = CreateLittleURLWithValidation();
 
         DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
         Date dateobj = new Date();
@@ -78,7 +93,7 @@ public class V1RestLink {
     }
 
     //Find link by little
-    @RequestMapping(value = "/links/{little}", method= RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/{little}", method= RequestMethod.GET, produces = "application/json")
     public Link FindLink(@PathVariable("little") String little){
 
         Link foundLink = links.findByLittle(little);
@@ -101,7 +116,7 @@ public class V1RestLink {
     }
 
     //Get all links
-    @RequestMapping(value = "/links", method= RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "routes/api/v1/links", method= RequestMethod.GET, produces = "application/json")
     public ArrayList<Link> GetLink(){
         ArrayList<Link> linkArrayList = new ArrayList<Link>();
 
@@ -114,7 +129,7 @@ public class V1RestLink {
     }
 
     //Delete link by little
-    @RequestMapping(value = "/links/{little}", method= RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value = "routes/api/v1/links/{little}", method= RequestMethod.DELETE, produces = "application/json")
     public String DeleteLink(@PathVariable("little") String little){
 
         //H2 DB
