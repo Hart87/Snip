@@ -40,7 +40,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     //Turn off authentication for a specific endpoint
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/users/new");
+        web.ignoring().antMatchers("routes/api/v1/users/new");
     }
 
     @Override

@@ -34,13 +34,16 @@ public class User extends BaseEntity {
     private String username;
     private String[] roles;
     private Integer requests;
+    private String createdAt;
 
-    public User(String email, String password, String username, String[] roles, Integer requests) {
+
+    public User(String email, String password, String username, String[] roles, Integer requests, String createdAt) {
         this.email = email;
         setPassword(password);
         this.username = username;
         this.roles = roles;
         this.requests = requests;
+        this.createdAt = createdAt;
     }
 
     protected User() {
@@ -48,6 +51,13 @@ public class User extends BaseEntity {
     }
 
     // GETTERS AND SETTERS ------------------
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public String getEmail() {
         return email;

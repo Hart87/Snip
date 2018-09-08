@@ -1,6 +1,7 @@
 package com.hart.core;
 
 import com.hart.aws.DBOpsLinks;
+import com.hart.aws.DBOpsUsers;
 import com.hart.link.Link;
 import com.hart.link.LinkRepository;
 import com.hart.user.User;
@@ -44,14 +45,12 @@ public class DatabaseLoader implements ApplicationRunner {
         ArrayList<Link> h2Links = DBOpsLinks.ScanDB();
         links.save(h2Links);
 
-//        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-//        Date dateobj = new Date();
-//        String createdAt = df.format(dateobj);
-//        links.save(new Link("http://www.newyorkjets.com", "HX3", "Twitter link for NY Jets", 20, createdAt));
 
-        //USERS --
-        User user = new User("hart87@gmail.com", "password", "james", new String[] {"ROLE_USER", "ROLE_ADMIN"}, 5);
+        //USERS   ---- POPULATE FROM AWS DYNAMO DB ON START
+        User user = new User("hart87@gmail.com", "password", "james", new String[] {"ROLE_USER", "ROLE_ADMIN"}, 5, "now");
         users.save(user);
+        ArrayList<User> h2Users = DBOpsUsers.ScanDB();
+        users.save(h2Users);
 
     }
 }
