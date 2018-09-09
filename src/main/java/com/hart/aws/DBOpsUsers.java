@@ -31,7 +31,7 @@ import java.util.Iterator;
 public class DBOpsUsers {
 
     //Create
-    public static void AddUser(String email, String password, String username, Integer reqs, String createdAt) throws Exception {
+    public static void AddUser(String email, String password, String username, Integer reqs, String createdAt, String image) throws Exception {
         BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJVWQTEYELFA6SWJA", "8ZNyh1AsicTX1D3ZZQN3INCHGm4EVmv34z0kvDEJ");
         AmazonDynamoDBClient client = new AmazonDynamoDBClient(credentials).withRegion(Regions.US_EAST_1);
         DynamoDB dynamoDB = new DynamoDB(client);
@@ -45,6 +45,7 @@ public class DBOpsUsers {
                     .putItem(new Item().withPrimaryKey("email", email, "password", password)
                             .withString("username", username)
                             .withString("createdAt", createdAt)
+                            .withString("image", image)
                             .withStringSet("roles", "ROLE_USER")
                             .withInt("reqs", reqs));
 
@@ -136,7 +137,7 @@ public class DBOpsUsers {
                 Gson gson = gsonBuilder.create();
                 users = gson.fromJson(item.toJSON(), User.class);
 
-                User user2add = new User(users.getEmail(), users.getPassword(), users.getUsername(), users.getRoles() , 5, users.getCreatedAt());
+                User user2add = new User(users.getEmail(), users.getPassword(), users.getUsername(), users.getRoles() , 5, users.getCreatedAt(), users.getImage());
                 usersList.add(user2add);
             }
         } catch (Exception e) {
@@ -147,29 +148,31 @@ public class DBOpsUsers {
         return usersList;
     }
 
-    //UPDATE ITEM     **************UPDATE THIS FOR USER *******
-    public static String UpdateUser(String little, Integer newHits) throws Exception {
+    //UPDATE ITEM     ********to update password:  String password
+    public static String UpdateUser(String email, String image) throws Exception {
         BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJVWQTEYELFA6SWJA", "8ZNyh1AsicTX1D3ZZQN3INCHGm4EVmv34z0kvDEJ");
         AmazonDynamoDBClient client = new AmazonDynamoDBClient(credentials).withRegion(Regions.US_EAST_1);
         DynamoDB dynamoDB = new DynamoDB(client);
 
-        Table table = dynamoDB.getTable("links");
+        Table table = dynamoDB.getTable("users");
 
 
-        UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("little", little)
+        UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("email", email)
 //                .withUpdateExpression("set info.rating = :r, info.plot=:p, info.actors=:a")
-                .withUpdateExpression("set hit = :a")
-                .withValueMap(new ValueMap().withInt(":a", newHits))
+                .withUpdateExpression("set image = :i")
+                .withValueMap(new ValueMap().withString(":i", image))
+                //.withUpdateExpression("set password = :p")
+                //.withValueMap(new ValueMap().withString(":p", password))
                 .withReturnValues(ReturnValue.UPDATED_NEW);
 
         try {
-            System.out.println("Updating " + little + "...");
+            System.out.println("Updating " + email + "...");
             UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
-            String returnString = ("Update hits succeeded:\n" + outcome.getItem().toJSONPretty());
+            String returnString = ("Update user graph:\n" + outcome.getItem().toJSONPretty());
             return returnString;
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            return "error 505 : ITEM HIT COUNT NOT UPDATED";
+            return "error 507 : USER CANNOT BE UPDATED";
         }
     }
 

@@ -64,7 +64,8 @@ public class V1RestUser {
     public User CreateUser(
             @RequestParam("email") String emailParam,
             @RequestParam("password") String passwordParam,
-            @RequestParam("username") String usernameParam) {
+            @RequestParam("username") String usernameParam,
+            @RequestParam("image") String imageParam) {
 
         String validateBeforeCreate = CreateUserWithEmailValidation(emailParam);
 
@@ -74,13 +75,13 @@ public class V1RestUser {
             String createdAt = df.format(dateobj);
 
             //H2 DB
-            User newUser = new User(emailParam, passwordParam, usernameParam, new String[]{"ROLE_USER"}, 5, createdAt);
+            User newUser = new User(emailParam, passwordParam, usernameParam, new String[]{"ROLE_USER"}, 5, createdAt, imageParam);
             users.save(newUser);
 
 
             //AWS
             try {
-                DBOpsUsers.AddUser(emailParam, passwordParam, usernameParam, 5, createdAt);
+                DBOpsUsers.AddUser(emailParam, passwordParam, usernameParam, 5, createdAt, imageParam);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.info("AWS : DYNAMO DB - USERS - FAIL TO UPLOAD");
@@ -90,7 +91,7 @@ public class V1RestUser {
 
         } else {
 
-            User badUser = new User("User already created with that name", "", "", new String[] {"ROLE_USER"}, 5, "");
+            User badUser = new User("User already created with that name", "", "", new String[] {"ROLE_USER"}, 5, "", "");
             return badUser;
         }
     }
@@ -118,6 +119,30 @@ public class V1RestUser {
     }
 
     //Update a User........
+    @RequestMapping(value = "routes/api/v1/users/{username}", method= RequestMethod.PUT, produces = "application/json")
+    public User EditUser(
+            @PathVariable("username") String username,
+            @RequestParam("image") String image)
+            //@RequestParam("password") String password)
+            {
+
+        User editedUser = users.findByUsername(username);
+
+        editedUser.setImage(image);
+        //editedUser.setPassword(password);
+
+        //H2 EDIT AND SAVE
+        users.save(editedUser);
+
+        //AWS EDIT AND SAVE
+        try {
+            DBOpsUsers.UpdateUser(editedUser.getEmail(), editedUser.getImage()); //editedUser.getPassword()
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return editedUser;
+    }
 
     //Delete link by little
     @RequestMapping(value = "routes/api/v1/users/{username}", method= RequestMethod.DELETE, produces = "application/json")

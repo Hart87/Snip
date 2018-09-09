@@ -35,15 +35,17 @@ public class User extends BaseEntity {
     private String[] roles;
     private Integer requests;
     private String createdAt;
+    private String image;
 
 
-    public User(String email, String password, String username, String[] roles, Integer requests, String createdAt) {
+    public User(String email, String password, String username, String[] roles, Integer requests, String createdAt, String image) {
         this.email = email;
         setPassword(password);
         this.username = username;
         this.roles = roles;
         this.requests = requests;
         this.createdAt = createdAt;
+        this.image = image;
     }
 
     protected User() {
@@ -97,5 +99,13 @@ public class User extends BaseEntity {
 
     public void setRequests(Integer requests) {
         this.requests = requests;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

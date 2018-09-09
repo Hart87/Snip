@@ -47,7 +47,7 @@ public class DatabaseLoader implements ApplicationRunner {
 
 
         //USERS   ---- POPULATE FROM AWS DYNAMO DB ON START
-        User user = new User("hart87@gmail.com", "password", "james", new String[] {"ROLE_USER", "ROLE_ADMIN"}, 5, "now");
+        User user = new User("hart87@gmail.com", "password", "james", new String[] {"ROLE_USER", "ROLE_ADMIN"}, 5, "now", "imagepathonS3");
         users.save(user);
         ArrayList<User> h2Users = DBOpsUsers.ScanDB();
         users.save(h2Users);
