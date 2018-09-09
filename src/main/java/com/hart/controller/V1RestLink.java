@@ -3,8 +3,11 @@ package com.hart.controller;
 import com.hart.aws.DBOpsLinks;
 import com.hart.link.Link;
 import com.hart.link.LinkRepository;
+import com.hart.user.User;
+import com.hart.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
@@ -33,9 +36,11 @@ public class V1RestLink {
 
     private static final Logger logger = LoggerFactory.getLogger(V1RestLink.class);
     private final LinkRepository links;
+    private final UserRepository users;
 
-    public V1RestLink(LinkRepository links) {
+    public V1RestLink(LinkRepository links, UserRepository users) {
         this.links = links;
+        this.users = users;
     }
 
 
@@ -71,6 +76,12 @@ public class V1RestLink {
             @RequestParam("big") String big,
             @RequestParam("description") String description ) {
 
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+        User authedUser = users.findByUsername(username);
+
         String little = CreateLittleURLWithValidation();
 
         DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
@@ -78,12 +89,12 @@ public class V1RestLink {
         String createdAt = df.format(dateobj);
 
         //H2 DB
-        Link newLink = new Link(big, little, description, 0, createdAt);
+        Link newLink = new Link(big, little, description, 0, createdAt, authedUser.getUsername());
         links.save(newLink);
 
         //AWS
         try {
-            DBOpsLinks.AddLink(little, big, description, 0, createdAt);
+            DBOpsLinks.AddLink(little, big, description, 0, createdAt, authedUser.getUsername());
         } catch (Exception e) {
             e.printStackTrace();
             logger.info("AWS : DYNAMO DB - LINKS - FAIL TO UPLOAD");
@@ -147,7 +158,21 @@ public class V1RestLink {
     }
 
 
-    //Get Link by User .........    AFTER ....  Users are created.
+    //Get all links by user
+    @RequestMapping(value = "routes/api/v1/links/all/{username}", method= RequestMethod.GET, produces = "application/json")
+    public ArrayList<Link> GetLinksByUsername(@PathVariable("username") String username) {
+        ArrayList<Link> userLinksArrayList = new ArrayList<Link>();
+
+        User authedUser = users.findByUsername(username);
+
+        for (Link link : links.findAll()) {
+            Link newLink = link;
+            if (link.getUsername().equals(authedUser.getUsername())){
+                userLinksArrayList.add(newLink);
+            }
+        }
+        return userLinksArrayList;
+    }
 
 
 }

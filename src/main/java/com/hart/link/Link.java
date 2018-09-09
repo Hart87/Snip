@@ -31,6 +31,7 @@ public class Link extends BaseEntity {
     private String description;
     private Integer hit;
     private String createdAt;
+    private String username;
     //ADD USER LATER OVER HERE
 
     protected Link() {
@@ -39,12 +40,13 @@ public class Link extends BaseEntity {
     }
 
 
-    public Link(String big, String little, String description, Integer hit, String createdAt) {
+    public Link(String big, String little, String description, Integer hit, String createdAt, String username) {
         this.big = big;
         this.little = little;
         this.description = description;
         this.hit = hit;
         this.createdAt = createdAt;
+        this.username = username;
     }
 
     public String getBig() {
@@ -85,5 +87,13 @@ public class Link extends BaseEntity {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

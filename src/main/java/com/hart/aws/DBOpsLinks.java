@@ -35,7 +35,7 @@ import java.util.Iterator;
 public class DBOpsLinks {
 
     //Create
-    public static void AddLink(String little, String big, String description, Integer hit, String createdAt) throws Exception {
+    public static void AddLink(String little, String big, String description, Integer hit, String createdAt, String username) throws Exception {
         BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJVWQTEYELFA6SWJA", "8ZNyh1AsicTX1D3ZZQN3INCHGm4EVmv34z0kvDEJ");
         AmazonDynamoDBClient client = new AmazonDynamoDBClient(credentials).withRegion(Regions.US_EAST_1);
         DynamoDB dynamoDB = new DynamoDB(client);
@@ -53,6 +53,7 @@ public class DBOpsLinks {
                     .putItem(new Item().withPrimaryKey("little", little, "big", big)
                             .withString("description", description)
                             .withString("createdAt", createdAt)
+                            .withString("username", username)
                             .withInt("hit", hit));
 //                            .withMap("info", infoMap))
 
@@ -146,7 +147,7 @@ public class DBOpsLinks {
                 Gson gson = gsonBuilder.create();
                 links = gson.fromJson(item.toJSON(), Link.class);
 
-                Link link2add = new Link(links.getBig(), links.getLittle(), links.getDescription(), links.getHit(), links.getCreatedAt());
+                Link link2add = new Link(links.getBig(), links.getLittle(), links.getDescription(), links.getHit(), links.getCreatedAt(), links.getUsername());
                 linksList.add(link2add);
             }
         }
