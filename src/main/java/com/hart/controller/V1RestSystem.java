@@ -41,7 +41,7 @@ public class V1RestSystem {
     }
 
     ///   R  E  S  T       -------------------------------
-//Get a users IP address on startup and determine their location
+    //Get a users IP address on startup and determine their location
     @RequestMapping(value = "/ipstart", method = RequestMethod.GET, produces = "application/json")
     public String GetLink(HttpServletRequest httpServletRequest) {
 
@@ -68,5 +68,12 @@ public class V1RestSystem {
         }
         return "Didn't work";
     }
+
+
+    @RequestMapping(value = "/update", method = RequestMethod.GET, produces = "application/json")
+    public String GetUpdateStatus() {
+        return "No";
+    }
 }
+
 

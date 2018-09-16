@@ -5,6 +5,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
@@ -80,33 +81,35 @@ public class DBOpsUsers {
         }
     }
 
-//    public static String GetLink(String email, String lastName) throws Exception {
-//        BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJVWQTEYELFA6SWJA", "8ZNyh1AsicTX1D3ZZQN3INCHGm4EVmv34z0kvDEJ");
-//        AmazonDynamoDBClient client = new AmazonDynamoDBClient(credentials).withRegion(Regions.US_EAST_1);
-//        DynamoDB dynamoDB = new DynamoDB(client);
-//
-//        Table table = dynamoDB.getTable("links");
-//        String returnString = null;
-//
-////        String email = "hart87@gmail.com";
-////        String lastName = "Hart";
-//
-//        GetItemSpec spec = new GetItemSpec().withPrimaryKey("email", email); //  "title", title
-//
-//        try {
-//            System.out.println("Attempting to read the item...");
-//            Item outcome = table.getItem(spec);
-//            returnString = "succeeded: " + outcome.toJSONPretty();
-//            //System.out.println("GetItem succeeded: " + outcome);
-//
-//        }
-//        catch (Exception e) {
-//            System.err.println("Unable to read item: " + email );
-//            System.err.println(e.getMessage());
-//            returnString = e.getMessage();
-//        }
-//        return returnString;
-//    }
+    public static User GetUser(String email) throws Exception {
+        BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJVWQTEYELFA6SWJA", "8ZNyh1AsicTX1D3ZZQN3INCHGm4EVmv34z0kvDEJ");
+        AmazonDynamoDBClient client = new AmazonDynamoDBClient(credentials).withRegion(Regions.US_EAST_1);
+        DynamoDB dynamoDB = new DynamoDB(client);
+
+        Table table = dynamoDB.getTable("users");
+        String returnString = null;
+
+        GetItemSpec spec = new GetItemSpec().withPrimaryKey("email", email); //  "title", title
+
+        try {
+            System.out.println("Attempting to read the item...");
+            Item outcome = table.getItem(spec);
+
+            Gson gson = new Gson();
+            User user = gson.fromJson(outcome.toJSON(), User.class);
+
+            //returnString = "succeeded: " + outcome.toJSONPretty();
+            System.out.println("GetItem succeeded: " + outcome.toJSONPretty());
+            return user;
+
+        }
+        catch (Exception e) {
+            System.err.println("Unable to read item: " + email );
+            System.err.println(e.getMessage());
+            returnString = e.getMessage();
+            return null;
+        }
+    }
 
     //SCAN
     //returns the entire database unless you apply filters.

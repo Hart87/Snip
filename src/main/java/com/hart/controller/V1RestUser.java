@@ -2,6 +2,7 @@ package com.hart.controller;
 
 
 import com.hart.aws.DBOpsUsers;
+import com.hart.core.LoginStruct;
 import com.hart.link.LinkRepository;
 import com.hart.user.User;
 import com.hart.user.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 
 /**
@@ -58,6 +60,40 @@ public class V1RestUser {
 
 
     ///   R  E  S  T       -------------------------------
+
+    //Login - no auth
+    @RequestMapping(value = "routes/api/v1/users/login", method= RequestMethod.GET, produces = "application/json")
+    public LoginStruct CreateUser(
+            @RequestParam("email") String emailParam,
+            @RequestParam("password") String passwordParam) {
+        //find the user by email
+        User authUser = users.findByEmail(emailParam);
+        logger.info(authUser.getUsername());
+
+        //get the password from Dynamo
+        String awsUserPassword = null;
+        try {
+            User awsUser = DBOpsUsers.GetUser(emailParam);
+            awsUserPassword = awsUser.getPassword();
+            logger.info("AWS Worx");
+            logger.info(awsUser.getUsername() + awsUser.getPassword());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        //concatenate inputs & encode them
+        String toEncode = authUser.getUsername() + ":" + awsUserPassword;
+        String encoded = Base64.getEncoder().encodeToString(toEncode.getBytes()).toString();
+        logger.info(encoded);
+
+        //Create the LoginStruct
+        LoginStruct loginStruct = new LoginStruct(encoded, authUser.getUsername());
+
+        //return the login struct
+        return loginStruct;
+    }
+
 
     //Create a user
     @RequestMapping(value = "routes/api/v1/users/new", method= RequestMethod.POST, produces = "application/json")

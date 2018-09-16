@@ -42,6 +42,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("routes/api/v1/users/new");
         web.ignoring().antMatchers("/ipstart");
+        web.ignoring().antMatchers("/update");
+        web.ignoring().antMatchers("/routes/api/v1/users/login");
     }
 
     @Override
