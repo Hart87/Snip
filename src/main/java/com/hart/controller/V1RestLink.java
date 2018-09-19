@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -105,7 +106,7 @@ public class V1RestLink {
 
     //Find link by little
     @RequestMapping(value = "/{little}", method= RequestMethod.GET, produces = "application/json")
-    public Link FindLink(@PathVariable("little") String little){
+    public RedirectView FindLink(@PathVariable("little") String little){
 
         Link foundLink = links.findByLittle(little);
         Integer incr = foundLink.getHit();
@@ -123,7 +124,10 @@ public class V1RestLink {
             e.printStackTrace();
         }
 
-        return foundLink;
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl(foundLink.getBig());
+
+        return redirectView;
     }
 
     //Get all links

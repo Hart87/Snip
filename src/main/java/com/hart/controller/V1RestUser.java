@@ -61,9 +61,9 @@ public class V1RestUser {
 
     ///   R  E  S  T       -------------------------------
 
-    //Login - no auth
+    ///Login - no auth
     @RequestMapping(value = "routes/api/v1/users/login", method= RequestMethod.GET, produces = "application/json")
-    public LoginStruct CreateUser(
+    public LoginStruct LoginUser(
             @RequestParam("email") String emailParam,
             @RequestParam("password") String passwordParam) {
         //find the user by email
@@ -93,7 +93,6 @@ public class V1RestUser {
         //return the login struct
         return loginStruct;
     }
-
 
     //Create a user
     @RequestMapping(value = "routes/api/v1/users/new", method= RequestMethod.POST, produces = "application/json")

@@ -12,6 +12,8 @@ import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hart.user.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,6 +32,8 @@ import java.util.Iterator;
  *
  */
 public class DBOpsUsers {
+
+    private static final Logger logger = LoggerFactory.getLogger(DBOpsUsers.class);
 
     //Create
     public static void AddUser(String email, String password, String username, Integer reqs, String createdAt, String image) throws Exception {
@@ -110,6 +114,7 @@ public class DBOpsUsers {
             return null;
         }
     }
+
 
     //SCAN
     //returns the entire database unless you apply filters.

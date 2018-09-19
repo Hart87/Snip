@@ -44,6 +44,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/ipstart");
         web.ignoring().antMatchers("/update");
         web.ignoring().antMatchers("/routes/api/v1/users/login");
+        web.ignoring().antMatchers("/{little}");
     }
 
     @Override
